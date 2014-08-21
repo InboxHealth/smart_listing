@@ -16,6 +16,23 @@ class SmartListing
       @fadeLoading()
 
     @container.on 'ajax:success', (e) =>
+      if $(e.target).is('.fixed-destroy')
+        # handle HEAD OK response for deletion request
+        editable = $(e.target).closest('.<%= SmartListing.config.classes(:editable) %>')
+        if @container.find(".<%= SmartListing.config.classes(:editable) %>").length == 1
+          @reload()
+          return false
+        else
+          editable.remove()
+
+          @container.trigger("smart_listing:destroy", editable)
+
+        @changeItemCount(-1)
+        @refresh()
+
+        @fadeLoaded()
+        return false
+
       if $(e.target).is('.<%= SmartListing.config.classes(:item_actions) %> <%= SmartListing.config.selectors(:item_action_destroy) %>')
         # handle HEAD OK response for deletion request
         editable = $(e.target).closest('.<%= SmartListing.config.classes(:editable) %>')
