@@ -15,6 +15,14 @@ class SmartListing
     @container.on 'ajax:before', (e) =>
       @fadeLoading()
 
+    @container.on "ajax:error", (e, xhr, status, error) =>
+        errors = xhr.responseJSON.error
+        _results = []
+        for message of errors
+            _results.push $("#master-flash").append('<div class="alert alert-danger alert-dismissable"><a class="close" data-dismiss="alert" href="#">×</a>' + errors[message] + '</div>')
+        @fadeLoaded()
+        _results
+
     @container.on 'ajax:success', (e) =>
       if $(e.target).is('.fixed-destroy')
         # handle HEAD OK response for deletion request
